@@ -1,0 +1,65 @@
+version: "3.9"
+
+# Local development composition for the Lead Scoring app.
+# Includes MongoDB and commented stubs for the API and UI services.
+# Start MongoDB alone first, then wire API/UI when implemented.
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: lead_scoring_mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME:-root}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-example}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - lead_scoring_net
+
+  # api:
+  #   build:
+  #     context: ./services/lead_scoring
+  #     dockerfile: Dockerfile
+  #   container_name: lead_scoring_api
+  #   restart: unless-stopped
+  #   environment:
+  #     - NODE_ENV=development
+  #     - MONGODB_URI=mongodb://$${MONGO_INITDB_ROOT_USERNAME}:$${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/?authSource=admin
+  #     - MONGODB_DB=${MONGODB_DB:-lead_scoring}
+  #     - LEAD_SCORE_WEIGHTS=${LEAD_SCORE_WEIGHTS:-0.4,0.35,0.25}
+  #     - LEAD_SCORE_CAPS=${LEAD_SCORE_CAPS:-10,20,600}
+  #     - LEAD_SCORE_DECAY_HALFLIFE_DAYS=${LEAD_SCORE_DECAY_HALFLIFE_DAYS:-7}
+  #     - SCORE_FRESHNESS_MINUTES=${SCORE_FRESHNESS_MINUTES:-15}
+  #   ports:
+  #     - "3001:3001"
+  #   depends_on:
+  #     - mongo
+  #   networks:
+  #     - lead_scoring_net
+
+  # dashboard:
+  #   build:
+  #     context: ./services/dashboard
+  #     dockerfile: Dockerfile
+  #   container_name: lead_scoring_dashboard
+  #   restart: unless-stopped
+  #   environment:
+  #     - NODE_ENV=development
+  #     - API_BASE_URL=http://localhost:3001
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - api
+  #   networks:
+  #     - lead_scoring_net
+
+volumes:
+  mongo_data:
+
+networks:
+  lead_scoring_net:
+    driver: bridge
+
