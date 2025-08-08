@@ -1,1 +1,41 @@
-.app_spec.md
+# Node / JS
+node_modules/
+.npm/
+.pnp*
+
+# Build outputs
+.dist/
+dist/
+.build/
+build/
+.next/
+.vercel/
+coverage/
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# OS & Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Test caches
+.jest/
+.nyc_output/
+
+# Lockfiles (allow one at root if you choose)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Keep spec tracked
+# Do NOT ignore the app spec
