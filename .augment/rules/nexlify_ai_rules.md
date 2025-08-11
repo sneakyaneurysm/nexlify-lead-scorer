@@ -7,6 +7,10 @@ globs:
   - "**/*.ts"
   - "**/*.tsx"
 
+Context: To make sure that the AI is operating consistently, make sure to add the context of what the app is and does, what we have worked on, and what the next items are to work on within the .app_context.md document. ALWAYS make sure that this doc is up-to-date with the context of where we are
+
+Troubleshooting: Any issues that we have while developing and testing this solution should be added to the .app_troubleshooting.md file. The issue, the explanation for why it is an issue, and the resolution for the issue should all be in this doc. If there are any issues while developing or testing, make sure to check the .app_troubleshooting.md doc first
+
 Code Style: Use functional programming principles (e.g., immutability, pure functions, composition over inheritance). Prioritize well-documented code with detailed comments explaining logic, intent, and edge cases.
 Naming Conventions: Use snake_case for all variables, functions, files, and database fields (e.g., lead_scoring_dashboard.tsx, calculate_lead_score).
 Language: Write prompts, comments, and documentation in English for consistency and LLM compatibility.

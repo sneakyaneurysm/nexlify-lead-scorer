@@ -9,7 +9,6 @@ dist/
 .build/
 build/
 .next/
-.vercel/
 coverage/
 
 # Env files
@@ -36,6 +35,10 @@ yarn-error.log*
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
+
+# Vibe Coding Files
+.app*
+.augment*
 
 # Keep spec tracked
 # Do NOT ignore the app spec
