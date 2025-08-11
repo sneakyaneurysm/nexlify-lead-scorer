@@ -1,13 +1,13 @@
-# AI-Powered Lead Scoring Dashboard
+# AI-Powered Lead Scoring Platform
 
-Demo repository for Nexlify's CRM lead scoring application that prioritizes leads using interaction data and machine learning.
+Standalone lead scoring application that prioritizes leads using interaction data and machine learning algorithms.
 
 ## Overview
 
-AI-Powered Lead Scoring Dashboard prioritizes leads in Nexlify's CRM using a simple, transparent model based on interaction data. It integrates with existing services and MongoDB, and ships as a React + Tailwind UI with an Express API service.
+AI-Powered Lead Scoring Platform is a complete, self-contained application that demonstrates intelligent lead prioritization using customer interaction data. Built with React + Tailwind UI and Express API service, it provides a full-featured lead scoring solution.
 
-**Business Goal:** +15% conversion rate improvement (~$750K ARR)
-**Value Proposition:** Actionable lead prioritization; improved CRM stickiness and acquisition
+**Business Goal:** Demonstrate effective lead scoring capabilities
+**Value Proposition:** Complete lead scoring platform with transparent algorithms and actionable insights
 
 ## Architecture
 
@@ -16,32 +16,30 @@ flowchart LR
   subgraph Client
     U[Sales User]
   end
-  subgraph Web[Web App]
-    FE[React + Tailwind\nLeadScoringDashboard]
-    API[/API Service\n/leads/scoring]
-  end
-  subgraph SVC[Existing Nexlify Services]
-    UM[(User Mgmt)]
-    AN[(Analytics)]
+  subgraph App[Lead Scoring Platform]
+    FE[React + Tailwind Dashboard]
+    API[Express API Service]
+    AUTH[Authentication Service]
   end
   subgraph DB[Data Layer]
-    MDB[(MongoDB\ninteractions, leadScores)]
+    MDB[(MongoDB users, interactions, leadScores)]
     CACHE[(Redis Cache - optional)]
   end
   U --> FE
+  FE -->|authenticate| AUTH
   FE -->|fetch leads| API
-  API -->|auth/profile| UM
-  API -->|fetch interactions| AN
+  API -->|validate auth| AUTH
   API -->|read/write| MDB
   API -->|cache| CACHE
 ```
 
 ### Components
 
-- **Frontend:** React (Next.js or Vite) with Tailwind CSS
-- **Backend:** Express API service route /leads/scoring
-- **Data:** MongoDB (interactions source; leadScores materialized cache)
-- **Integrations:** User Mgmt (auth/owner), Analytics (optional interactions), GitHub + Linear + Notion
+- **Frontend:** React (Vite) with Tailwind CSS
+- **Backend:** Express API service with authentication
+- **Database:** MongoDB (users, interactions, leadScores)
+- **Authentication:** JWT-based user authentication
+- **Caching:** Optional Redis for performance optimization
 
 ## Features
 
@@ -72,20 +70,27 @@ Where:
 
 ## Data Model
 
-### interactions (read-only)
+### users (authentication & ownership)
 ```
-tenantId, userId, leadId, emailOpens:number, websiteVisits:number,
-timeSpent:number(seconds), lastActivityAt:ISODate, updatedAt:ISODate
+userId, email:string, passwordHash:string, name:string,
+role:string, createdAt:ISODate, lastLoginAt:ISODate
 ```
-**Indexes:** `{tenantId:1, leadId:1}`, `{tenantId:1, updatedAt:-1}`
+**Indexes:** `{email:1}` (unique), `{userId:1}`
 
-### leadScores (materialized cache)
+### interactions (lead activity data)
 ```
-tenantId, leadId, score:number(0–100),
+userId, leadId, leadName:string, leadEmail:string, emailOpens:number,
+websiteVisits:number, timeSpent:number(seconds), lastActivityAt:ISODate, updatedAt:ISODate
+```
+**Indexes:** `{userId:1, leadId:1}`, `{userId:1, updatedAt:-1}`, `{userId:1, lastActivityAt:-1}`
+
+### leadScores (computed scores)
+```
+userId, leadId, leadName:string, score:number(0–100),
 breakdown:{emailOpens, websiteVisits, timeSpent, decayFactor?},
-computedAt:ISODate, lastActivityAt:ISODate, ownerId?
+computedAt:ISODate, lastActivityAt:ISODate
 ```
-**Indexes:** `{tenantId:1, score:-1}`, `{tenantId:1, computedAt:-1}`, `{tenantId:1, ownerId:1, score:-1}`
+**Indexes:** `{userId:1, score:-1}`, `{userId:1, computedAt:-1}`, `{leadId:1}`
 
 ## Local Development
 
